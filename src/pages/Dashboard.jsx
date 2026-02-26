@@ -5,7 +5,8 @@ import { io } from 'socket.io-client';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const SERVER_IP = 'http://10.30.239.138:3000';
+// Railway Production Backend - Secure WebSocket
+const SERVER_IP = 'https://arenaplay-production.up.railway.app';
 
 const Dashboard = ({ appState, setAppState }) => {
   const { userProfile, user, divisionThresholds } = useFirebase();
@@ -30,10 +31,13 @@ const Dashboard = ({ appState, setAppState }) => {
     console.log('Connecting to:', SERVER_IP);
     
     const socket = io(SERVER_IP, {
-      transports: ['websocket', 'polling'],
+      transports: ['websocket'],
+      secure: true,
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000
     });
     
     socket.on('connect', () => console.log('Socket Connected:', socket.id));
