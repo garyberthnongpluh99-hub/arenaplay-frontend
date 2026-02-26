@@ -9,19 +9,55 @@ const AuthPage = () => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const { signIn, signUp } = useFirebase();
   const navigate = useNavigate();
+
+  // Email regex validation
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    // Clear error when user starts typing
+    if (emailError) setEmailError('');
+    if (error) setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setEmailError('');
     setLoading(true);
 
     try {
+      // Trim and validate email
+      const trimmedEmail = email.trim();
+      
+      if (!trimmedEmail) {
+        setEmailError('Email is required');
+        setLoading(false);
+        return;
+      }
+
+      if (!isValidEmail(trimmedEmail)) {
+        setEmailError('Please enter a valid email address (e.g., user@example.com)');
+        setLoading(false);
+        return;
+      }
+
       if (isSignUp) {
-        await signUp(email, password, username);
+        if (!username.trim()) {
+          setError('Username is required');
+          setLoading(false);
+          return;
+        }
+        await signUp(trimmedEmail, password, username.trim());
       } else {
-        await signIn(email, password);
+        await signIn(trimmedEmail, password);
       }
       navigate('/');
     } catch (err) {
@@ -168,12 +204,24 @@ const AuthPage = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="Enter your email"
               required
               className="input-field"
-              style={{ minHeight: '50px' }}
+              style={{ 
+                minHeight: '50px',
+                borderColor: emailError ? '#ef4444' : undefined
+              }}
             />
+            {emailError && (
+              <p style={{
+                color: '#ef4444',
+                fontSize: '12px',
+                marginTop: '6px'
+              }}>
+                {emailError}
+              </p>
+            )}
           </div>
 
           <div style={{ marginBottom: '24px' }}>
