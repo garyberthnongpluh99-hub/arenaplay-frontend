@@ -31,3 +31,4 @@ coverage/
 # Firebase
 .firebase/
 firebase-debug.log
+serviceAccountKey.json
