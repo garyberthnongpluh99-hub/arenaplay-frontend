@@ -8,6 +8,12 @@ import { db } from '../firebase';
 // Railway Production Backend - Secure WebSocket
 const SERVER_IP = 'https://arenaplay-production.up.railway.app';
 
+const socket = io(SERVER_IP, {
+  path: '/socket.io',
+  transports: ['websocket']
+});
+
+
 const Dashboard = ({ appState, setAppState }) => {
   const { userProfile, user, divisionThresholds } = useFirebase();
   const [queueTime, setQueueTime] = useState(0);
