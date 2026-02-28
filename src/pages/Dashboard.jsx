@@ -9,8 +9,13 @@ import { db } from '../firebase';
 const SERVER_IP = 'https://arenaplay-production.up.railway.app';
 
 const socket = io(SERVER_IP, {
-  path: '/socket.io',
-  transports: ['websocket']
+  // you can remove `path` if you didn't change it on the server
+  // path: '/socket.io',
+  transports: ['websocket', 'polling']
+});
+
+socket.on('connect_error', (err) => {
+  console.log('connect_error:', err.message);
 });
 
 
