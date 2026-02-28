@@ -8,8 +8,9 @@ import { db } from '../firebase';
 // Railway Production Backend - Secure WebSocket
 const SERVER_IP = 'https://arenaplay-production.up.railway.app';
 
-
-const socket = io(SERVER_IP);   // no path, no forced transports
+const socket = io(SERVER_IP, {
+  transports: ['polling', 'websocket']
+});
 
 socket.on('connect', () => {
   console.log('connected to server', socket.id);
