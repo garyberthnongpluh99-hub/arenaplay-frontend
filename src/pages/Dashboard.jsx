@@ -5,7 +5,12 @@ import { io } from 'socket.io-client';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const SERVER_IP = 'http://10.30.239.138:3000';
+const SERVER_IP = 'httpS://arenaplay-production.up.railway.app';
+
+const socket = io(SERVER_IP, {
+  path: '/socket.io',
+  transports: ['websocket']
+});
 
 const Dashboard = ({ appState, setAppState }) => {
   const { userProfile, user, divisionThresholds } = useFirebase();
